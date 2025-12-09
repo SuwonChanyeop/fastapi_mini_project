@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+
+
+
+<div class="container fade-in" style="max-width: 540px; margin: 60px auto; text-align: center;">
+
+    <h2 class="mb-3" style="font-weight: 700;">오늘의 질문</h2>
+
+    <div id="question-box"
+        class="card shadow-lg p-4 rounded-4 mb-4"
+        style="font-size: 20px; line-height: 1.6;">
+        {{ question_text if question_text else "등록된 질문이 없습니다." }}
+    </div>
+
+    <button id="reload-btn"
+            class="btn btn-primary rounded-3"
+            style="width: 100%; padding: 12px;">
+        다른 질문 받기
+    </button>
+</div>
+
+<script>
+document.getElementById("reload-btn").addEventListener("click", async () => {
+    const res = await fetch("/api/v1/questions/random");
+    const data = await res.json();
+    document.getElementById("question-box").innerText = data.text;
+});
+</script>
+
+{% endblock %}

@@ -1,6 +1,3 @@
-import time
-from typing import List, Tuple
-
 import requests
 from bs4 import BeautifulSoup
 from sqlalchemy.orm import Session
@@ -8,97 +5,100 @@ from sqlalchemy.orm import Session
 from app.db.session import SessionLocal
 from app.models.quote import Quote
 
+TARGET_URL = "https://namu.wiki/w/%EB%AA%85%EC%96%B8"
 
-BASE_URL = "https://saramro.com/quotes"
 
-
-def fetch_quote_list(page: int = 1) -> str:
-    """
-    주어진 페이지의 HTML을 가져옵니다.
-    필요에 따라 ?page=2 이런식으로 바꿔주세요.
-    """
-    url = f"{BASE_URL}?page={page}"
-    resp = requests.get(url, timeout=10)
+def fetch_page() -> str:
+    print(f"[QUOTE SCRAPER] Fetching from: {TARGET_URL}")
+    resp = requests.get(TARGET_URL, timeout=10)
     resp.raise_for_status()
     return resp.text
 
 
-def parse_quotes(html: str) -> List[Tuple[str, str | None]]:
+def contains_hangul(text: str) -> bool:
+    return any("가" <= ch <= "힣" for ch in text)
+
+
+def parse_quotes(html: str) -> list[tuple[str, str | None]]:
     """
-    HTML에서 명언(text)과 author를 파싱합니다.
-    사이트 구조에 맞게 selector는 약간 수정이 필요할 수 있습니다.
-    return: [(text, author), ...]
+    - 페이지 내 모든 <li> 태그 텍스트 추출
+    - 한글이 포함된 문장만 명언 후보로 사용
+    - 너무 긴 설명/해설은 제외
+    - "문장 — 화자" 또는 "문장 - 화자" 형태면 화자를 분리
     """
     soup = BeautifulSoup(html, "html.parser")
-    results: List[Tuple[str, str | None]] = []
+    results: list[tuple[str, str | None]] = []
 
-    # 예시: <div class="quote-item"><p class="content">...</p><p class="author">...</p></div>
-    quote_items = soup.select(".quote-item")
-
-    for item in quote_items:
-        text_el = item.select_one(".content")
-        author_el = item.select_one(".author")
-
-        if not text_el:
+    for li in soup.select("li"):
+        text = li.get_text(" ", strip=True)
+        if not text:
+            continue
+        if len(text) < 6:
+            continue
+        if len(text) > 120:
             continue
 
-        text = text_el.get_text(strip=True)
-        author = author_el.get_text(strip=True) if author_el else None
+        if not contains_hangul(text):
+            continue
 
-        if text:
-            results.append((text, author))
+        quote_text = text
+        author: str | None = None
+
+        for sep in ["—", "-", "―"]:
+            if sep in text:
+                parts = text.split(sep)
+                if len(parts) >= 2:
+                    quote_text = parts[0].strip()
+                    author = parts[-1].strip()
+                break
+
+        results.append((quote_text, author))
 
     return results
 
 
-def save_quotes(db: Session, quotes: List[Tuple[str, str | None]]) -> int:
-    """
-    quotes: (text, author) 리스트를 DB에 저장.
-    text 중복은 건너뜁니다.
-    반환값: 새로 추가된 개수
-    """
+def save_quotes(db: Session, quotes: list[tuple[str, str | None]]) -> int:
     added = 0
-    for text, author in quotes:
-        # 중복 체크: text 동일한 것이 있으면 skip
-        exists = db.query(Quote).filter(Quote.text == text).first()
+
+    for q_text, q_author in quotes:
+        exists = db.query(Quote).filter(Quote.text == q_text).first()
         if exists:
             continue
 
-        q = Quote(text=text, author=author)
+        q = Quote(text=q_text, author=q_author)
         db.add(q)
         added += 1
 
-    if added:
+    if added > 0:
         db.commit()
+
     return added
 
 
-def scrape_quotes(pages: int = 1, sleep_sec: float = 1.0) -> None:
+def scrape_quotes() -> None:
     """
-    pages: 몇 페이지까지 가져올지
-    sleep_sec: 사이트에 너무 많은 요청을 보내지 않도록 delay
+    전체 흐름:
+    1) 한국어 명언 페이지에서 HTML 가져오기
+    2) 명언/화자 리스트로 파싱
+    3) quotes 테이블에 저장
     """
+    html = fetch_page()
+    quotes = parse_quotes(html)
+    print(f"[QUOTE SCRAPER] Parsed {len(quotes)} Korean quotes")
+
+    if not quotes:
+        print("[QUOTE SCRAPER] No quotes parsed. (0개) – 사이트 구조가 바뀐 것일 수 있습니다.")
+        return
+
     db = SessionLocal()
     try:
-        total_added = 0
-        for page in range(1, pages + 1):
-            print(f"[QUOTE SCRAPER] Fetch page {page} ...")
-            html = fetch_quote_list(page)
-            parsed = parse_quotes(html)
-            if not parsed:
-                print(f"[QUOTE SCRAPER] page {page}: no quotes found, stop.")
-                break
-
-            added = save_quotes(db, parsed)
-            total_added += added
-            print(f"[QUOTE SCRAPER] page {page}: {added} quotes added.")
-
-            time.sleep(sleep_sec)
-
-        print(f"[QUOTE SCRAPER] Done. Total added: {total_added}")
+        added = save_quotes(db, quotes)
+        print(f"[QUOTE SCRAPER] Added {added} new quotes to DB")
     finally:
         db.close()
 
+    print("[QUOTE SCRAPER] Done.")
+
 
 if __name__ == "__main__":
-    scrape_quotes(pages=3)
+    scrape_quotes()

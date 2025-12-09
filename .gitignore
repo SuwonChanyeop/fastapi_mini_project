@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Environments
+.venv/
+env/
+venv/
+
+# VSCode
+.vscode/
+
+# OS crap
+.DS_Store
+
+# DB
+app.db
+
+# uv lock
+uv.lock

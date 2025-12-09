@@ -40,7 +40,7 @@ def get_logged_in_user(request: Request, db: Session):
 
 
 # ---------------------------------------------------
-# ⭐ 홈 화면 (명언 완전 제거)
+# 홈 화면 (명언 제거)
 # ---------------------------------------------------
 @router.get("/", response_class=HTMLResponse)
 async def home(request: Request, db: Session = Depends(get_db)):
@@ -51,7 +51,6 @@ async def home(request: Request, db: Session = Depends(get_db)):
         {
             "request": request,
             "user": user
-            # 🔥 명언 관련 코드 전부 제거
         }
     )
 
@@ -65,7 +64,7 @@ async def login_page(request: Request):
 
 
 # ---------------------------------------------------
-# 로그인 처리
+# 로그인 처리 ⭐ 수정된 부분 포함 ⭐
 # ---------------------------------------------------
 @router.post("/auth/login")
 async def login_submit(
@@ -78,7 +77,8 @@ async def login_submit(
     if not user or not verify_password(password, user.password):
         return RedirectResponse("/auth/login", status_code=302)
 
-    token = create_access_token(str(user.id))
+    # ⭐ 여기만 수정됨 (dict 형태로 변경!)
+    token = create_access_token({"sub": str(user.id)})
 
     response = RedirectResponse("/", status_code=302)
     response.set_cookie(
@@ -229,7 +229,6 @@ async def diary_create(
     return RedirectResponse("/diary/list", status_code=302)
 
 
-
 # ---------------------------------------------------
 # 일기 상세
 # ---------------------------------------------------
@@ -250,6 +249,7 @@ async def diary_detail(request: Request, diary_id: int, db: Session = Depends(ge
         {"request": request, "user": user, "diary": diary, "comments": comments},
     )
 
+
 # ---------------------------------------------------
 # 일기 수정 화면
 # ---------------------------------------------------
@@ -261,7 +261,6 @@ async def diary_edit_page(request: Request, diary_id: int, db: Session = Depends
     if not diary:
         return RedirectResponse("/diary/list", status_code=302)
 
-    # 본인 글만 수정 가능
     if not user or diary.user_id != user.id:
         return RedirectResponse("/diary/list", status_code=302)
 
