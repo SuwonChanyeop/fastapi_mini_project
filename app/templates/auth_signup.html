@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2 style="font-size:32px; margin-bottom:20px;">회원가입</h2>
+
+<div class="card">
+    <form method="post" action="/auth/signup" style="display:flex; flex-direction:column; gap:14px;">
+
+        <input type="email" name="email" placeholder="이메일" required>
+        <input type="password" name="password" placeholder="비밀번호" required>
+        <input type="text" name="nickname" placeholder="닉네임">
+        <input type="text" name="name" placeholder="이름">
+        <input type="text" name="phone" placeholder="전화번호">
+
+        <button class="btn btn-dark" style="width:100%;">회원가입</button>
+    </form>
+</div>
+
+{% endblock %}

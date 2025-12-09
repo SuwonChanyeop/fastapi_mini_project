@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2 style="font-size:32px; margin-bottom:20px;">로그인</h2>
+
+<div class="card show">
+    <form method="post" action="/auth/login">
+
+        <input type="text" name="email" placeholder="이메일"
+               style="width:100%; padding:12px; margin-bottom:16px; border-radius:10px; border:1px solid #ddd;">
+
+        <input type="password" name="password" placeholder="비밀번호"
+               style="width:100%; padding:12px; margin-bottom:16px; border-radius:10px; border:1px solid #ddd;">
+
+        <!-- ⭐⭐⭐ 문제 원인: type="submit" 없어서 form이 절대 전송되지 않았음 -->
+        <button type="submit" class="btn-primary">로그인</button>
+
+    </form>
+</div>
+
+{% endblock %}

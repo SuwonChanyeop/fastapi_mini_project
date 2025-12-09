@@ -1,0 +1,121 @@
+/* GLOBAL */
+body {
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f5f7fb;
+    margin: 0;
+}
+
+/* Fade-in Effect */
+.fade-in {
+    animation: fade 0.7s ease-out;
+}
+@keyframes fade {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* NAVIGATION */
+.nav-glass {
+    backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(255,255,255,0.75);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.brand {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.nav-links .nav-link {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #2c2c2e;
+    font-weight: 500;
+    opacity: 0.85;
+}
+.nav-link:hover { opacity: 1; }
+
+.user-tag {
+    margin-right: 12px;
+    font-weight: 600;
+    color: #007aff;
+}
+
+/* CARD */
+.card {
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    padding: 30px;
+    margin-bottom: 30px;
+    animation: fade 0.6s ease-out;
+}
+
+/* BUTTONS */
+.btn-primary {
+    background: #007aff;
+    color: white;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    width: 100%;
+    display: block;        /* ★ 추가 */
+    text-align: center;    /* ★ 추가 */
+    box-sizing: border-box;/* ★ 추가 */
+    cursor: pointer;
+}
+
+.btn-primary:hover { background: #0051c7; }
+
+/* INPUTS */
+input, textarea {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+    border: 1px solid #e5e5ea;
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(20px);
+    font-size: 15px;
+}
+
+/* TIMELINE */
+.timeline-line {
+    position: absolute;
+    left: 25px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 2px;
+}
+
+.diary-item {
+    position: relative;
+    padding: 28px 28px 28px 70px;
+    margin-bottom: 40px;
+    background: rgba(255,255,255,0.65);
+    backdrop-filter: blur(16px);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.4);
+}
+
+.timeline-dot {
+    position: absolute;
+    left: 16px;
+    top: 34px;
+    width: 18px;
+    height: 18px;
+    background: #007aff;
+    border-radius: 50%;
+    border: 3px solid white;
+}

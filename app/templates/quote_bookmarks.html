@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2 style="font-size:28px; margin-bottom:20px;">내가 북마크한 명언</h2>
+
+{% include "partials/nav.html" %}
+
+<div class="card show" style="padding: 20px;">
+    
+    {% if bookmarks %}
+        <ul style="list-style:none; padding:0; margin:0;">
+            {% for b in bookmarks %}
+                <li style="padding:16px 0; border-bottom:1px solid #eee;">
+                    {% if b.quote %}
+                        "<strong>{{ b.quote.text }}</strong>"
+                        {% if b.quote.author %}
+                            ― {{ b.quote.author }}
+                        {% endif %}
+                    {% else %}
+                        <em>연결된 명언이 없습니다.</em>
+                    {% endif %}
+
+                    <br>
+                    <small>
+                        저장일:
+                        {{ b.created_at.strftime("%Y-%m-%d %H:%M") if b.created_at else "" }}
+                    </small>
+
+                    <form action="/quotes/bookmarks/{{ b.id }}/delete"
+                        method="post"
+                        style="display:inline; margin-left:10px;">
+                        <button type="submit">삭제</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>아직 북마크한 명언이 없습니다.</p>
+    {% endif %}
+
+</div>
+
+<p style="margin-top: 20px;">
+    <a href="/quotes/random/page">오늘의 명언 보러가기</a>
+</p>
+
+{% endblock %}

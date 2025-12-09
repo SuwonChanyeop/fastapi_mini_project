@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h1 style="font-size:32px; margin-bottom:20px;">오늘의 명언</h1>
+
+<div class="card show" style="padding:25px; margin-bottom:24px; text-align:center;">
+    
+    {% if quote %}
+        <p style="font-size:22px; font-weight:600; margin:0;">
+            "{{ quote.text }}"
+        </p>
+
+        {% if quote.author %}
+            <p style="margin-top:8px; color:#666;">
+                ― {{ quote.author }}
+            </p>
+        {% endif %}
+    {% else %}
+        <p>등록된 명언이 없습니다.</p>
+    {% endif %}
+
+    <a
+        href="/quotes/random/page"
+        class="btn-primary"
+        style="
+            display:block;
+            width:100%;
+            padding:14px 20px;
+            border-radius:12px;
+            font-size:16px;
+            font-weight:500;
+            text-decoration:none;
+            text-align:center;
+            margin-top:28px;
+        "
+    >
+        다른 명언 보기
+    </a>
+
+</div>
+
+{% if quote %}
+<form action="/quotes/bookmark" method="post" style="margin-top: 1rem;">
+    <input type="hidden" name="quote_id" value="{{ quote.id }}">
+    <button
+        type="submit"
+        class="btn-primary"
+        style="
+            width:100%;
+            padding:14px 20px;
+            border-radius:12px;
+            font-size:16px;
+            font-weight:500;
+            cursor:pointer;
+        "
+    >
+        이 명언 북마크
+    </button>
+</form>
+{% endif %}
+
+<p style="margin-top: 1rem; text-align:center;">
+    <a href="/quotes/bookmarks">내가 북마크한 명언 보기</a>
+</p>
+
+{% endblock %}

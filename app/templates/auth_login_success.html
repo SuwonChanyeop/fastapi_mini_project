@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2 style="font-size:32px; margin-bottom:20px;">로그인 완료</h2>
+
+<div class="card">
+    <p style="font-size:20px; color:#444;">로그인에 성공했습니다!</p>
+
+    <a class="btn-dark" href="/diary/list" 
+       style="margin-top:20px; display:block; text-align:center; padding:14px; border-radius:10px;">
+        → 일기 목록으로 이동
+    </a>
+
+    <a class="btn-light" href="/logout"
+       style="margin-top:12px; display:block; text-align:center; padding:14px; border-radius:10px;">
+        로그아웃
+    </a>
+</div>
+
+{% endblock %}

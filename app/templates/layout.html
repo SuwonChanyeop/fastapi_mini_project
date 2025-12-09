@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title if title else "FastAPI Mini Project" }}</title>
+
+    <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<nav class="nav-glass">
+    <div class="brand">FastAPI Project</div>
+
+    <div class="nav-links">
+        {% if user %}
+            <span class="user-tag">{{ user.nickname }}님</span>
+            <a href="/auth/logout" class="nav-link">로그아웃</a>
+        {% else %}
+            <a href="/auth/login" class="nav-link">로그인</a>
+            <a href="/auth/signup" class="nav-link">회원가입</a>
+        {% endif %}
+
+        <a href="/" class="nav-link">홈</a>
+        <a href="/diary/list" class="nav-link">일기</a>
+        <a href="/quotes/random/page" class="nav-link">명언</a>
+        <a href="/questions" class="nav-link">질문</a>
+        <a href="/docs" class="nav-link">API 문서</a>
+    </div>
+</nav>
+
+<div class="page-wrapper fade-in">
+    {% block content %}{% endblock %}
+</div>
+
+<script src="/static/script.js"></script>
+
+</body>
+</html>

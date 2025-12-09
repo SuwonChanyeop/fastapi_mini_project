@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2 style="font-size:28px; margin-bottom:20px;">오늘의 질문</h2>
+
+<div class="card show" style="padding: 20px; margin-bottom: 30px;">
+    <p style="font-size:20px; margin-bottom:15px; font-weight:500;">
+        {{ question if question else '질문 데이터를 불러올 수 없습니다.' }}
+    </p>
+</div>
+
+<hr style="margin: 40px 0;">
+
+<h2 style="font-size:28px; margin-bottom:20px;">랜덤 질문</h2>
+
+<div class="card show" style="text-align:center; padding: 20px;">
+    <p id="question-text"
+       style="font-size:22px; font-weight:500; margin-bottom:20px;">
+        질문을 불러오는 중입니다...
+    </p>
+
+    <button onclick="loadQuestion()" class="btn-primary" style="width:100%; margin-top:20px;">
+        다른 질문 받기
+    </button>
+</div>
+
+<script>
+async function loadQuestion() {
+    try {
+        const res = await fetch("/api/v1/questions/random");
+        const data = await res.json();
+        document.getElementById("question-text").innerText = data.content;
+    } catch (error) {
+        document.getElementById("question-text").innerText = "서버 요청 실패!";
+    }
+}
+
+document.addEventListener("DOMContentLoaded", loadQuestion);
+</script>
+
+{% endblock %}

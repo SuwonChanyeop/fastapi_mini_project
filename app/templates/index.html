@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h1 class="fade-in" style="font-size:48px; font-weight:700; margin-bottom:20px;">
+    FastAPI Mini Project
+</h1>
+
+<p class="fade-in" style="font-size:20px; color:#555; margin-bottom:50px;">
+    더 빠르게, 더 간결하게.  
+    당신의 하루와 데이터를 아름답게 연결하는 미니 프로젝트입니다.
+</p>
+
+<div class="card show">
+    <h2 style="margin-top:0;">일기 서비스</h2>
+    <p style="color:#666;">순간을 기록하고 스토리를 만들어보세요.</p>
+
+    <div style="margin-top:20px; display:flex; flex-direction:column; gap:12px;">
+        <a class="btn-primary" href="/diary/list">일기 리스트 보기</a>
+        <a class="btn-light" href="/diary/create">새로운 일기 작성</a>
+    </div>
+</div>
+
+<div class="card show">
+    <h2 style="margin-top:0;">오늘의 명언</h2>
+    <p style="color:#666;">하루를 바꾸는 한 문장을 만나보세요.</p>
+
+    <div style="margin-top:20px; display:flex; flex-direction:column; gap:12px;">
+        <a class="btn-primary" href="/quotes/random/page">랜덤 명언 보기</a>
+        <a class="btn-light" href="/quotes/bookmarks">내가 저장한 명언</a>
+    </div>
+</div>
+
+<div class="card show">
+    <h2 style="margin-top:0;">질문</h2>
+    <p style="color:#666;">생각을 기록하고 관점을 넓혀보세요.</p>
+
+    <div style="margin-top:20px;">
+        <a class="btn-primary" href="/questions">질문 페이지 이동</a>
+    </div>
+</div>
+
+<div class="card show">
+    <h2 style="margin-top:0;">API 문서</h2>
+    <p style="color:#666;">프로젝트 기능을 테스트할 수 있습니다.</p>
+
+    <div style="margin-top:20px;">
+        <a class="btn-light" href="/docs">Swagger 열기</a>
+    </div>
+</div>
+
+{% endblock %}

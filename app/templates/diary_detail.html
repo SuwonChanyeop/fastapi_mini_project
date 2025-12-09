@@ -1,0 +1,30 @@
+{% if user and diary and user.id == diary.user_id %}
+<div style="display:flex; justify-content:flex-end; gap:10px; margin-bottom:20px;">
+
+    <form action="/diary/{{ diary.id }}/edit" method="get">
+        <button
+            type="submit"
+            class="btn-primary"
+            style="padding:8px 16px; font-size:14px;"
+        >
+            수정
+        </button>
+    </form>
+
+    <form action="/diary/{{ diary.id }}/delete" method="post"
+        onsubmit="return confirm('정말 이 일기를 삭제하시겠습니까?');">
+        <button
+            type="submit"
+            class="btn-primary"
+            style="
+                padding:8px 16px;
+                font-size:14px;
+                background-color:#ff4d4f;
+                border-color:#ff4d4f;
+            "
+        >
+            삭제
+        </button>
+    </form>
+</div>
+{% endif %}
