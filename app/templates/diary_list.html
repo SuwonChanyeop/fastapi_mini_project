@@ -27,13 +27,14 @@
     <div class="card show" style="margin-bottom:24px;">
         
         <h3 style="margin-top:0;">
-            <a href="/diary/{{ diary.id }}" style="text-decoration:none; color:#111;">
+            <a href="/diary/detail/{{ diary.id}}" style="text-decoration:none; color:#111;">
                 {{ diary.title if diary.title else "제목 없음" }}
             </a>
         </h3>
 
         <p style="color:#666; margin-top:8px;">
-            {{ diary.created_at.strftime("%Y-%m-%d %H:%M") }}
+            {{ diary.created_at | to_kst | datetime_format("%Y-%m-%d %H:%M") }}
+
         </p>
 
         <p style="color:#444; margin-top:14px;">
