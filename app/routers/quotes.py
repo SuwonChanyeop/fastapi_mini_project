@@ -24,6 +24,32 @@ from app.core.config import settings
 router = APIRouter(prefix="/quotes", tags=["Quotes"])
 templates = Jinja2Templates(directory="app/templates")
 
+# --------------------------------------
+#   KST 시간 필터 + 문자열 포맷 필터
+# --------------------------------------
+from datetime import datetime, timedelta, timezone
+from typing import Optional
+
+KST = timezone(timedelta(hours=9))
+
+def to_kst(dt: Optional[datetime]):
+    if dt is None:
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(KST)
+
+def datetime_format(dt: Optional[datetime], fmt="%Y-%m-%d %H:%M"):
+    if dt is None:
+        return ""
+    return dt.strftime(fmt)
+
+# 🔥 Jinja2 필터 등록
+templates.env.filters["to_kst"] = to_kst
+templates.env.filters["datetime_format"] = datetime_format
+
+
+
 
 # 로그인 유저
 def get_logged_in_user(request: Request, db: Session):
