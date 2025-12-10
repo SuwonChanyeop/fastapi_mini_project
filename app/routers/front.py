@@ -15,6 +15,30 @@ from app.models.diary import Diary
 from app.models.comment import Comment
 
 templates = Jinja2Templates(directory="app/templates")
+from datetime import datetime, timedelta, timezone
+from typing import Optional
+
+# KST 타임존 설정
+KST = timezone(timedelta(hours=9))
+
+def to_kst(dt: Optional[datetime]):
+    """UTC 또는 tz 없는 datetime → KST 변환"""
+    if dt is None:
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(KST)
+
+def datetime_format(dt: Optional[datetime], fmt: str = "%Y-%m-%d %H:%M"):
+    """datetime을 문자열로 포맷"""
+    if dt is None:
+        return ""
+    return dt.strftime(fmt)
+
+# 🔥 반드시 front.py의 templates 에 붙여야 diary_list.html에서 인식됨
+templates.env.filters["to_kst"] = to_kst
+templates.env.filters["datetime_format"] = datetime_format
+
 router = APIRouter()
 
 
