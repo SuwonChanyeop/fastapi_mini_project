@@ -14,15 +14,19 @@ def create_diary(db: Session, current_user: User, data: DiaryCreate) -> Diary:
 def get_diary_or_404(db: Session, diary_id: int) -> Diary:
     diary = diary_repo.get_diary_by_id(db, diary_id)
     if not diary:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Diary not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Diary not found",
+        )
     return diary
 
 
 def ensure_owner(diary: Diary, user: User) -> None:
+    """권한 체크: 자기 일기만 조회/수정/삭제 가능"""
     if diary.user_id != user.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Not enough permissions",
+            detail="이 일기에 대한 권한이 없습니다.",
         )
 
 
